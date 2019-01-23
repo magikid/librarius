@@ -4,6 +4,10 @@ Librarius is a [Ruby on Rails](https://rubyonrails.org/) class project for the
 Spring 2019 Ruby CodeLouisville class.  We'll be working on it week-by-week
 until we have a complete project.
 
+## Catch Up
+
+If you miss a week and aren't sure what we did, check the CHANGELOG.md file.  I'll be documenting what we did each week there.  In addition, you can checkout that week's work to see the code that we wrote.
+
 ## Installation
 
 To install, clone this repo and run bundle install inside the project folder to
