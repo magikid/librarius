@@ -32,9 +32,10 @@ what is displayed to the user.  They are stored in the
 with.
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.  For minor changes, open a PR to the master branch.
 
-Please make sure to update tests as appropriate.
+### Mentors
+If you're working on this without me, please create a new branch based on master for the week's work, make your commits, then open a PR back to master.  I'd appreciate it if in your changes you could update the [CHANGELOG.md](https://github.com/magikid/librarius/blob/master/CHANGELOG.md) with what you worked on but if you let me know what you did, I don't mind updating it.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
