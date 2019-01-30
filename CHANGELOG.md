@@ -125,3 +125,5 @@ Now with the server running, `localhost:3000/books` showed our list of books.
 Next we created a `show` action in the `books_controller` and an associated view, `app/views/books/show.html.erb`.
 
 Then we went back and revised these two pages to include links between them with the `link_to` helper.  We had to check the docs to call it successfully, https://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to.
+
+After class, added a link to the welcome page to make it easier to find the index page.
