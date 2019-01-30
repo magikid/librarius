@@ -98,7 +98,7 @@ Now that we generated some data for the database, we want a controller for books
 
 Next we modified our `config/routes.rb` file, to include routes for this new books "resource":
 `resources :books`
-Creating a resource creates routes for all the basic CRUD operations.
+Creating a resource creates routes for all the basic CRUD operations.  The Rails docs explain it more in depth: https://guides.rubyonrails.org/routing.html#resources-on-the-web
 
 First we wanted to see a list of books in the database.
 First we added an `index` method to `app/controllers/books_controller.rb`.
