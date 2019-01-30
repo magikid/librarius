@@ -68,3 +68,37 @@ By adding those two lines, you're telling the Rails server that if a user
 requests the `/` route, to send them to your welcome controller and index view.
 You're also telling Rails that is a user requests the `/welcome/index` route to
 also send them to your welcome controller and index view.
+
+## Week 4
+
+rails generate model Book title:string page_numbers:integer dewey_decimal:float
+
+rails db:migrate
+
+rails console
+
+```
+Book.all
+book = Book.new
+book.title = 'Ruby Class!'
+book.attributes = {page_numbers: 1000, dewey_decimal: 100.730}
+book.save!
+Book.create(title: 'Book 2', page_numbers: 1_000_000, dewey_decimal:1)
+```
+
+rails g controller books
+
+config/routes.rb
+resources :books
+
+new view called index.html.erb
+```
+<h1>Books</h1>
+
+<ul>
+  <% @books.each do |book| %>
+  <li><strong><%= book.title %></strong><br/>Pages: <%= book.page_numbers%></li>
+  <% end %>
+</ul>
+```
+
