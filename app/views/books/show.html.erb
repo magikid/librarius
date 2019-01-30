@@ -1,0 +1,8 @@
+<h1><%= @book.title %></h1>
+Info:
+<ul>
+  <li>Pages: <%= @book.page_numbers %></li>
+  <li>Dewey #: <%= @book.dewey_decimal %></li>
+</ul>
+
+<%= link_to 'Book List', books_path %>
