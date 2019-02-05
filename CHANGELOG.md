@@ -68,3 +68,62 @@ By adding those two lines, you're telling the Rails server that if a user
 requests the `/` route, to send them to your welcome controller and index view.
 You're also telling Rails that is a user requests the `/welcome/index` route to
 also send them to your welcome controller and index view.
+
+## Week 4
+
+This week we generated a model and an associated controller to display books from the database.
+
+The first thing we did was use Rails to generate a model with this command:
+`rails generate model Book title:string page_numbers:integer dewey_decimal:float`
+
+This generated a model file.  This is a class like any other in Ruby so you can add book specific methods here.  The only thing we cared about is the fields we created, so nothing was added.  To add a `books` table to the database, we run the auto-generated migration file with this command:
+`rails db:migrate`
+
+To explore the database, it's common to use the Rails Console.
+`rails console`
+
+Once in the console, we used these commands to explore what data was available.
+```
+Book.all
+book = Book.new
+book.title = 'Ruby Class!'
+book.attributes = {page_numbers: 1000, dewey_decimal: 100.730}
+book.save!
+Book.create(title: 'Book 2', page_numbers: 1_000_000, dewey_decimal:1)
+Book.count
+```
+
+Now that we generated some data for the database, we want a controller for books.  ("g" is short for "generate")
+`rails g controller books`
+
+Next we modified our `config/routes.rb` file, to include routes for this new books "resource":
+`resources :books`
+Creating a resource creates routes for all the basic CRUD operations.  The Rails docs explain it more in depth: https://guides.rubyonrails.org/routing.html#resources-on-the-web
+
+First we wanted to see a list of books in the database.
+First we added an `index` method to `app/controllers/books_controller.rb`.
+
+```
+def index
+  @books = Book.all
+end
+```
+
+We also created a new view in `app/views/books` called `index.html.erb`.
+```
+<h1>Books</h1>
+
+<ul>
+  <% @books.each do |book| %>
+  <li><strong><%= book.title %></strong><br/>Pages: <%= book.page_numbers%></li>
+  <% end %>
+</ul>
+```
+
+Now with the server running, `localhost:3000/books` showed our list of books.
+
+Next we created a `show` action in the `books_controller` and an associated view, `app/views/books/show.html.erb`.
+
+Then we went back and revised these two pages to include links between them with the `link_to` helper.  We had to check the docs to call it successfully, https://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to.
+
+After class, added a link to the welcome page to make it easier to find the index page.
