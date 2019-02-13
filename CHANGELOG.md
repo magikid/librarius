@@ -127,3 +127,136 @@ Next we created a `show` action in the `books_controller` and an associated view
 Then we went back and revised these two pages to include links between them with the `link_to` helper.  We had to check the docs to call it successfully, https://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to.
 
 After class, added a link to the welcome page to make it easier to find the index page.
+
+## Week 5
+
+During this week, we talked about how requests work and added a form to allow entering new books.  There are two main types of requests that a server should handle: `GET` requests and `POST` requests.  When you visit a webpage, that's normally a `GET` request because you're `GET`ting the page.  When you enter information into a form and send it to the server you're making a `POST` request as though you were sending it through the `POST` Office.  When we added our resource routes for Books the other week, there are two routes that deal with allowing a user to send data to our server.  You can see them by running `bin/rails routes` in your project directory.
+
+```
+                   Prefix Verb   URI Pattern                                                                              Controller#Action
+                 new_book GET    /books/new(.:format)                                                                     books#new
+                          POST   /books(.:format)                                                                         books#create
+```
+
+The first route maps a GET request and the URL `/books/new` to our `books_controller` and the `new` action.  The second route maps a POST request and the URL `/books` to the `books_controller` and the `create` action.  To allow users to enter a new book, the user will first visit the new book page where they will be presented with a form for a book and when they submit the form, it will send the form data as a POST request to the `/books` route where our controller will save it to the database.
+
+In our books_controller, we first added the `new` action and set it up to look like this:
+
+```ruby
+  def new
+    @book = Book.new
+  end
+```
+
+That tells rails to create a new, empty book and save it to the `@book` variable which will be accessible in our `app/views/books/new.html.erb` view.  In our new books view, we created our form using the form builder that comes with Rails.  It looks like this:
+
+```
+<%= form_with model: @book, local: true do |form| %>
+    <p>
+        <%= form.label :title %>
+        <%= form.text_field :title %>
+    </p>
+    <p>
+        <%= form.label :page_numbers %>
+        <%= form.text_field :page_numbers %>
+    </p>
+    <p>
+        <%= form.label :dewey_decimal %>
+        <%= form.text_field :dewey_decimal %>
+    </p>
+    <%= form.submit %>
+<% end %>
+```
+
+In the first line, we are telling rails to help us build a form using the `@book` variable from the controller.  We create fields for each of the attributes in our model and then we create a submit button.  For more reading on the form builder, check out the [Rails Guide on Form Helpers](https://guides.rubyonrails.org/form_helpers.html).  After saving both of those files, if you go to the http://localhost:3000/books/new , you should see the new form that we just created.  If you try to submit it though, you'll get an error because we haven't told the controller how to handle the create request yet.
+
+In the `books_controller` again, we added our next action: the `create` action which looks like this:
+
+```ruby
+  def create
+    params.require(:book).permit!
+    @book = Book.new(params[:book])
+    if @book.save
+      redirect_to book_path(@book)
+    end
+  end
+```
+
+The first line is required to tell rails that we want to allow the book form data from the request.  Once we have that, we create a new book from the data and then we save it.  If the save was successful, we redirect the user to show them the new book.  Since we are always redirecting the user to a new page, there is _no_ view for this action.
+
+## Week 6
+
+In week 6, we added Bootstrap to our site so that it would be responsive and we talked about how rails takes a view and turns it into the full HTML web page that you see when you visit a page.
+
+First we started by adding the following lines to the bottom of our Gemfile:
+
+```
+gem 'bootstrap'
+gem 'jquery-rails'
+```
+
+After adding them, we ran `bundle install` to install the new dependencies.  To integrate bootstrap into our application, we needed to change two other files `app/assets/javascripts/application.js` and `app/assets/stylesheets/application.css`.  For `application.js`, we added a few lines near the bottom.  Right above the line that says `//= require_tree .`, we added these lines:
+
+```
+//= jquery3
+//= popper
+//= bootstrap
+# Below line is already in the file
+//= require_tree .
+```
+
+That tells Rails to include the bootstrap javascript in our pages.  Up next, we deleted the file `app/assets/stylesheets/application.css` and we created the file `app/assets/stylesheets/application.scss`.  Their names are very similar but the second one ends in `scss` and that is what we need.  We added this single line to the `application.scss` file:
+
+```scss
+@import 'bootstrap';
+```
+
+That tells Rails to import the bootstrap css into our pages.  With all that in place, we finally modified the file `app/views/layouts/application.html.erb`.  Rails uses this file to turn your views into full webpages.  Where you see the line `<%= yield %>` is where the HTML from your view is inserted.  To use bootstap in our application, we changed the `<body></body>` to look like this:
+
+```html
+<body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+        <%= yield %>
+        </div>
+      </div>
+    </div>
+</body>
+```
+
+That tells Rails to use wrap all of our pages into a bootstrap container, row, and column.  For more reading on how we integrated Bootstrap into our Rails application, [here is the FreeCodeCamp blog post that I used](https://medium.freecodecamp.org/add-bootstrap-to-your-ruby-on-rails-project-8d76d70d0e3b).  For a refresher on Bootstrap, [here's their documentation](https://getbootstrap.com/docs/4.3/getting-started/introduction/).
+
+After adding bootstrap, we did one final thing for the night.  We added a delete link to our books index view and added a destroy action to our controller.
+
+If you look in the routes we created a few weeks ago with the command `bin/rails routes` you'll see the following line:
+
+```
+                   Prefix Verb   URI Pattern                                                                              Controller#Action
+                          DELETE /books/:id(.:format)                                                                     books#destroy
+```
+
+That maps a `DELETE` request and the `/books/:id` path to the `books_controller` and `destroy` action.  We started by adding the action to our controller.  Here's what we added to our `books_controller.rb`:
+
+```ruby
+  def destroy
+    @book = Book.find(params[:id])
+    @book.destroy
+
+    redirect_to books_path
+  end
+```
+
+The first line takes the id that is passed in and finds that book.  Then we use the `destroy` method to delete that book from the database.  Once it's deleted, we redirect to the list of books at the `books_path`.  All that is left is to add a link on our books/index view that allows users to delete books from the database.  We changed the inside of the `@books.each` block to the following in our `app/views/books/index.html.erb` file:
+
+```
+    <li>
+      <strong><%= link_to(book.title, book_path(book)) %></strong> -
+      <small><%= link_to('DESTROY!', book_path(book),
+          method: :delete,
+          data: { confirm: "Are you sure?" }
+        ) %></small>
+    </li>
+```
+
+The big change is adding the DESTROY link.  We pass in "DESTROY!" as the text that the user will see and point it at the `books_path(book)` route which translates to `/books/:id`.  Then we tell Rails that instead of making this a normal `GET` request to make this a `DELETE` request using the `method: :delete`.  The last line gives the user a pop-up confirming that they want to delete the book they selected.
