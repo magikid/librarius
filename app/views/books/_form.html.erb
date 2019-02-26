@@ -1,0 +1,25 @@
+<%= form_with model: @book, local: true do |form| %>
+    <% if @book.errors.any? %>
+        <h2>
+            <%= pluralize(@book.errors.count, "error") %> prohibited this from being saved:
+        </h2>
+        <ul>
+            <% book.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+        </ul>
+    <% end %>
+    <p>
+        <%= form.label :title %>
+        <%= form.text_field :title %>
+    </p>
+    <p>
+        <%= form.label :page_numbers %>
+        <%= form.text_field :page_numbers %>
+    </p>
+    <p>
+        <%= form.label :dewey_decimal %>
+        <%= form.text_field :dewey_decimal %>
+    </p>
+    <%= form.submit %>
+<% end %>
