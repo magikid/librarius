@@ -259,4 +259,125 @@ The first line takes the id that is passed in and finds that book.  Then we use 
     </li>
 ```
 
-The big change is adding the DESTROY link.  We pass in "DESTROY!" as the text that the user will see and point it at the `books_path(book)` route which translates to `/books/:id`.  Then we tell Rails that instead of making this a normal `GET` request to make this a `DELETE` request using the `method: :delete`.  The last line gives the user a pop-up confirming that they want to delete the book they selected.
+The big change is adding the DESTROY link.  We pass in "DESTROY!" as the text that the user will see
+and point it at the `books_path(book)` route which translates to `/books/:id`.  Then we tell Rails
+that instead of making this a normal `GET` request to make this a `DELETE` request using the
+`method: :delete`.  The last line gives the user a pop-up confirming that they want to delete the
+book they selected.
+
+## Week 7
+
+We finally got the ability to edit our books this week by creating two new actions in the
+`BooksController`.  We first created the edit action by adding the following code block:
+
+```ruby
+    def edit
+        @book = Book.find(params[:id])
+    end
+```
+
+This tells rails that when a user tries to edit a book, first look up the values of the current book
+in the database and pass that to the view.
+
+Next we added another block of code to the `BooksController` to handle the user sending in the updated form:
+
+```ruby
+    def update
+        @book = Book.find(params[:id])
+        if @book.update(book_params)
+            redirect_to @book
+        else
+            render 'edit'
+        end
+    end
+```
+
+There's a lot going on here so lets dissect it a little bit.  The first line `@book =
+Book.find(params[:id])` should look familiar from the edit action.  We're looking up the book that
+the user wants to edit.  Then we have an `if/else` block that tells rails to try to update the book
+with the new values (`@book.update(book_params)`) and if Rails can update the model then redirect
+the user to the updated book's show route.  If it can't save the model, render the 'edit' view which
+will then show the users the errors that caused the model to not be saved.
+
+The final piece that you need to add to the BooksController needs to go at the very bottom and it's
+this block:
+
+```ruby
+  private
+
+  def book_params
+    params.require(:book).permit!
+  end
+```
+
+If you look in our `update` action, you'll see that we are passing `book_params` to the `update`
+method. `book_params` is actually a function that gets the data from the form our user submitted.
+Take a look at the (Strong Parameters documentation)[https://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters] if you want to know more.
+
+Now we need to add the view so that our users can have a form to submit their edits.  We used a
+partial view for this.  To do that, we created a new file at `app/views/books/_form.html.erb` and we
+added this block to it:
+
+```ruby
+    <%= form_with model: @book, local: true do |form| %>
+        <% if @book.errors.any? %>
+            <h2>
+                <%= pluralize(@book.errors.count, "error") %> prohibited this from being saved:
+            </h2>
+            <ul>
+                <% book.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+            </ul>
+        <% end %>
+        <p>
+             <%= form.label :title %>
+            <%= form.text_field :title %>
+        </p>
+        <p>
+            <%= form.label :page_numbers %>
+            <%= form.text_field :page_numbers %>
+        </p>
+        <p>
+            <%= form.label :dewey_decimal %>
+            <%= form.text_field :dewey_decimal %>
+        </p>
+        <%= form.submit %>
+    <% end %>
+```
+
+That should look very familiar because it is very similar to our `books/new.html.erb`.  The only
+difference is that we have a new block at the top that checks for errors and prints them out if
+there are any found.
+
+Now in our `app/views/books/edit.html.erb` file, we tell Rails that we want to use the form partial
+with the following:
+
+```ruby
+    <h1>Edit Book</h1>
+    <%= render 'form' %>
+```
+
+Since the form is the same as what we had in our `books/new.html.erb` file, we also updated that
+file to look like this:
+
+```ruby
+    <h1>New Book</h1>
+    <%= render 'form' %>
+```
+
+That tells Rails to also render our form partial when it goes to render the new view.
+
+The final change of the week is that we edited our `books/index.html.erb` view and added a link to
+edit each of the books:
+
+```ruby
+      <small><%= link_to("Edit", edit_book_path(book)) %></small> -
+```
+
+That goes right under the `<strong>` tag and right above the other `<small>` tag.
+
+## Wrap up
+
+At this point, our project is feature complete.  This project meets all of the requirements for the
+Code Louisville Ruby project.
