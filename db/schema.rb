@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_29_232318) do
+ActiveRecord::Schema.define(version: 2019_03_05_232817) do
+
+  create_table "authors", force: :cascade do |t|
+    t.string "name"
+    t.string "favorite_color"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "books", force: :cascade do |t|
     t.string "title"
@@ -18,6 +25,8 @@ ActiveRecord::Schema.define(version: 2019_01_29_232318) do
     t.float "dewey_decimal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "author_id"
+    t.index ["author_id"], name: "index_books_on_author_id"
   end
 
 end
