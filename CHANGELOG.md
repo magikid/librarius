@@ -377,7 +377,32 @@ edit each of the books:
 
 That goes right under the `<strong>` tag and right above the other `<small>` tag.
 
-## Wrap up
+### Wrap up
 
 At this point, our project is feature complete.  This project meets all of the requirements for the
 Code Louisville Ruby project.
+
+## Week 9
+
+We created an Author model and associated it with books.  We went on to make an Author Index page to show those relationships.
+We added `dependent: :destroy` to the relationship added to the Author model so that all the Author's books would be destroyed when the author is destroyed.
+
+### commands used:
+```
+rails generate model Author name:string favorit_color:string
+rails generate controller authors
+rails g migration AddAuthorIdToBooks author:references
+rails db:migrate
+```
+### rails console commands
+```
+a = Author.create!(name: 'Tom C Author')
+Book.create!(title: "Tom's Biography", page_numbers: 5000, dewey_decimal: 100.0, author: a)
+a.books.create!(title: 'new book')
+
+Author.all.includes(:books).each do |author|
+  author.books.each do |book|
+    puts "#{author.name} wrote #{book.title}"
+  end
+end
+```
