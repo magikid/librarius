@@ -1,0 +1,8 @@
+<% if flash[:notice] %>
+    <%= content_tag :div, class: "alert alert-info alert-dismissible fade show", role: "alert" do -%>
+        <%= flash[:notice] %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    <% end -%>
+<% end %>
