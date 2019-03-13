@@ -4,7 +4,7 @@
             <%= pluralize(@book.errors.count, "error") %> prohibited this from being saved:
         </h2>
         <ul>
-            <% book.errors.full_messages.each do |msg| %>
+            <% @book.errors.full_messages.each do |msg| %>
                 <li><%= msg %></li>
             <% end %>
         </ul>
