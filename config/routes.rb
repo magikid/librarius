@@ -6,11 +6,12 @@ Rails.application.routes.draw do
   get "welcome/index"
   root "welcome#index"
 
-  get   '/login', :to => 'sessions#new', :as => :login
-  match '/auth/:provider/callback', :to => 'sessions#create'
-  match '/auth/failure', :to => 'sessions#failure'
-
   resources :books
+
+  get   'login', to: redirect('/auth/github'), as: 'login'
+  get   '/auth/:provider/callback', :to => 'sessions#create'
+  get   'logout', :to => 'sessions#destroy', as: 'logout'
+
 
   resources :authors, only: [:index]
 end
